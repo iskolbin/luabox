@@ -227,7 +227,7 @@ static int lua_tb_peek_event( lua_State *L ) {
 	}
 
 	switch ( event_type ) {
-		LUABOX_CALL( TB_EVENT_KEY )
+		LUABOX_CALL( (void *)TB_EVENT_KEY )
 		if ( event_struct->ch ) {
 			char buffer[8] = {0};
 			tb_utf8_unicode_to_char( buffer, event_struct->ch );
@@ -240,7 +240,7 @@ static int lua_tb_peek_event( lua_State *L ) {
 		lua_pushnumber( L, event_struct->mod );
 		LUABOX_RETURN( TB_EVENT_KEY, 3, 0 )
 
-		LUABOX_CALL( TB_EVENT_RESIZE )
+		LUABOX_CALL( (void *)TB_EVENT_RESIZE )
 		lua_pushnumber( L, event_struct->w );
 		lua_pushnumber( L, event_struct->h );
 		LUABOX_RETURN( TB_EVENT_RESIZE, 2, 0 )
@@ -271,8 +271,8 @@ static int luabox_set_callback( lua_State *L ) {
 	event_type = luaL_checkint( L, 1 );
 	if ( lua_isfunction( L, 2 )) {
 		switch ( event_type ) {
-			LUABOX_CALLBACK( TB_EVENT_KEY );
-			LUABOX_CALLBACK( TB_EVENT_RESIZE );
+			LUABOX_CALLBACK( (void *)TB_EVENT_KEY );
+			LUABOX_CALLBACK( (void *)TB_EVENT_RESIZE );
 		}
 	}
 
