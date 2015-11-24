@@ -2,7 +2,7 @@ package = 'LuaBox'
 version = '1.0-1'
 source = {
 	url = 'git://github.com/iskolbin/luabox'
-	tag = '1.0',
+	tag = 'v1.0',
 }
 description = {
 	summary = 'Highlevel Lua bindings to termbox library',
