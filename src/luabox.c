@@ -199,7 +199,7 @@ static int lua_tb_select_output_mode( lua_State *L ) {
 
 #define LUABOX_CALL(event) \
 	case event: \
-lua_pushlightuserdata( L, &lbstate->event ## _ ); \
+lua_pushlightuserdata( L, (void *) &lbstate->event ## _ ); \
 lua_gettable( L, LUA_REGISTRYINDEX ); \
 if ( lua_isfunction( L, -1 )) {
 
@@ -227,7 +227,7 @@ static int lua_tb_peek_event( lua_State *L ) {
 	}
 
 	switch ( event_type ) {
-		LUABOX_CALL( (void *)TB_EVENT_KEY )
+		LUABOX_CALL( TB_EVENT_KEY )
 		if ( event_struct->ch ) {
 			char buffer[8] = {0};
 			tb_utf8_unicode_to_char( buffer, event_struct->ch );
@@ -240,7 +240,7 @@ static int lua_tb_peek_event( lua_State *L ) {
 		lua_pushnumber( L, event_struct->mod );
 		LUABOX_RETURN( TB_EVENT_KEY, 3, 0 )
 
-		LUABOX_CALL( (void *)TB_EVENT_RESIZE )
+		LUABOX_CALL( TB_EVENT_RESIZE )
 		lua_pushnumber( L, event_struct->w );
 		lua_pushnumber( L, event_struct->h );
 		LUABOX_RETURN( TB_EVENT_RESIZE, 2, 0 )
@@ -254,7 +254,7 @@ static int lua_tb_peek_event( lua_State *L ) {
 
 #define LUABOX_CALLBACK(event) \
 	case event: { \
-								lua_pushlightuserdata( L, &lbstate->event ## _ ); \
+								lua_pushlightuserdata( L, (void *) &lbstate->event ## _ ); \
 								lua_pushvalue( L, 2 ); \
 								lua_settable( L, LUA_REGISTRYINDEX ); \
 								break; \
@@ -271,8 +271,8 @@ static int luabox_set_callback( lua_State *L ) {
 	event_type = luaL_checkint( L, 1 );
 	if ( lua_isfunction( L, 2 )) {
 		switch ( event_type ) {
-			LUABOX_CALLBACK( (void *)TB_EVENT_KEY );
-			LUABOX_CALLBACK( (void *)TB_EVENT_RESIZE );
+			LUABOX_CALLBACK( TB_EVENT_KEY );
+			LUABOX_CALLBACK( TB_EVENT_RESIZE );
 		}
 	}
 
