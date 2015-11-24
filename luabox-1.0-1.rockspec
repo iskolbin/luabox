@@ -21,10 +21,6 @@ build = {
 				'src/luabox.c',
 				'src/termbox/termbox.c', 
 				'src/termbox/utf8.c', 
-				--'src/termbox/bytebuffer.inl', 
-				--'src/termbox/input.inl',
-				--'src/termbox/term.inl',
-				--'src/termbox/termbox.h',
 			},
 		}
 	}
