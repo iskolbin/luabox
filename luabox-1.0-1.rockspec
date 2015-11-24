@@ -1,7 +1,7 @@
 package = 'LuaBox'
 version = '1.0-1'
 source = {
-	url = 'git://github.com/iskolbin/luabox'
+	url = 'git://github.com/iskolbin/luabox',
 	tag = 'v1.0',
 }
 description = {
@@ -17,16 +17,14 @@ build = {
 	type = 'builtin',
 	modules = {
 		luabox = {
-			sources = {'src/luabox.c'}
-		},
-		termbox = {
 			sources = {
+				'src/luabox.c',
 				'src/termbox/termbox.c', 
 				'src/termbox/utf8.c', 
-				'src/termbox/bytebuffer.inl', 
-				'src/termbox/input.inl',
-				'src/termbox/term.inl',
-				'src/termbox/termbox.h',
+				--'src/termbox/bytebuffer.inl', 
+				--'src/termbox/input.inl',
+				--'src/termbox/term.inl',
+				--'src/termbox/termbox.h',
 			},
 		}
 	}

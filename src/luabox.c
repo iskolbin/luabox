@@ -411,9 +411,9 @@ static const luaL_Reg stringext[] = {
 };
 
 #if (LUA_VERSION_NUM==501) 
-int luaopen_luabox51( lua_State *L ) {
-#elif (LUA_VERSION_NUM==502)
-int luaopen_luabox52( lua_State *L ) {
+int luaopen_luabox( lua_State *L ) {
+#elif (LUA_VERSION_NUM>=502)
+int luaopen_luabox( lua_State *L ) {
 #else
 #error "Sorry, your version of Lua is not supported"
 #endif
