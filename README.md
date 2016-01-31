@@ -5,9 +5,9 @@
 Highlevel Lua bindings to termbox library (see https://github.com/nsf/termbox).  
 
 ## Setup ##
-
+Building with luarocks
 ```sh
-luarocks install luabox
+luarocks make luabox
 ```
 
 To use library in your code you should:
@@ -132,3 +132,6 @@ Primitive file manager
 
 ####repl.lua####
 REPL for Lua
+
+####corerl.lua####
+Clone of small rogulike game, see http://www.locklessinc.com/articles/512byte_roguelike/
