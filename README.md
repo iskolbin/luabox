@@ -2,7 +2,7 @@
 
 ## Quick summary ##
 
-Highlevel Lua bindings to **termbox** library (see https://github.com/nsf/termbox).  
+Highlevel Lua bindings to **termbox** library (see https://github.com/nsf/termbox). Input and output sections of this readme is just little edited version from original sources, see src/termbox/termbox.h lines 233 and 259.  
 
 ## Setup ##
 Building with luarocks from root folder:
@@ -41,7 +41,6 @@ reason you've decided to use (**INPUT**\_**ESC** + **INPUT**\_**ALT**) combinati
 will behave as if only **INPUT**\_**ESC** was selected.
 
 If _mode_ is **INPUT**\_**CURRENT**, it returns the current input mode.
-
 Default luabox input mode is **INPUT**\_**ESC**.
 
 * INPUT\_CURRENT
@@ -54,24 +53,27 @@ Default luabox input mode is **INPUT**\_**ESC**.
 * setoutput( mode )
 
 Luabox has three output options:
-1. OUTPUT\_NORMAL     => [1..8]
+1. **OUTPUT**\_**NORMAL**     => [1..8]
    This mode provides 8 different colors:
      BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE
 
-2. OUTPUT\_256        => [0..256]
+2. **OUTPUT**\_**256**        => [0..256]
    In this mode you can leverage the 256 terminal mode:
    0x00 - 0x07: the 8 colors as in TB\_OUTPUT\_NORMAL
    0x08 - 0x0f: TB\_\* + TB\_BOLD
    0x10 - 0xe7: 216 different colors
    0xe8 - 0xff: 24 different shades of grey
 
-2. OUTPUT\_216        => [0..216]
+2. **OUTPUT**\_**216**        => [0..216]
    This mode supports the 3rd range of the 256 mode only.
    But you don't need to provide an offset.
 
-3. OUTPUT\_GRAYSCALE  => [0..23]
+3. **OUTPUT**\_**GRAYSCALE**  => [0..23]
    This mode supports the 4th range of the 256 mode only.
    But you dont need to provide an offset
+
+If _mode_ is **OUTPUT**\_**CURRENT**, it returns the current output mode.
+Default termbox output mode is **OUTPUT**\_**NORMAL**.
 
 * OUTPUT\_CURRENT
 * OUTPUT\_NORMAL
