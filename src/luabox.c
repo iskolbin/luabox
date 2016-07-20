@@ -191,14 +191,14 @@ static int luabox_print( lua_State *L ) {
 
 static int lua_tb_select_input_mode( lua_State *L ) {
 	int mode = luaL_checkint( L, 1 );
-	tb_select_input_mode( mode );
-	return 0;
+	lua_pushnumber( L, tb_select_input_mode( mode ));
+	return 1;
 }
 
 static int lua_tb_select_output_mode( lua_State *L ) {
 	int mode = luaL_checkint( L, 1 );
-	tb_select_output_mode( mode );
-	return 0;
+	lua_pushnumber( L, tb_select_output_mode( mode ));
+	return 1;
 }
 
 #define LUABOX_CALL(event) \
