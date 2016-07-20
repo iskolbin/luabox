@@ -2,7 +2,7 @@
 
 ## Quick summary ##
 
-Highlevel Lua bindings to termbox library (see https://github.com/nsf/termbox).  
+Highlevel Lua bindings to **termbox** library (see https://github.com/nsf/termbox).  
 
 ## Setup ##
 Building with luarocks from root folder:
@@ -22,16 +22,57 @@ local lb = require('luabox')
 * init( [inputmode, outputmode] )
 * shutdown()
 
-### Setting input and/or output modes
-* setinput( mode )
-* setoutput( mode )
+### Input ###
 
-#### Input modes ####
+* setinput( mode )
+
+Luabox has two input modes:
+1. Esc input mode.
+   When ESC sequence is in the buffer and it doesn't match any known
+   ESC sequence => ESC means **KEY**\_**ESC**.
+2. Alt input mode.
+   When ESC sequence is in the buffer and it doesn't match any known
+   sequence => ESC enables **MOD**\_**ALT** modifier for the next keyboard event.
+
+You can also apply **INPUT**\_**MOUSE** via addition operation to either of the
+modes (e.g. **INPUT**\_**ESC** + **INPUT**\_**MOUSE**). If none of the main two modes
+were set, but the mouse mode was, **INPUT**\_**ESC** mode is used. If for some
+reason you've decided to use (**INPUT**\_**ESC** + **INPUT**\_**ALT**) combination, it
+will behave as if only **INPUT**\_**ESC** was selected.
+
+If _mode_ is **INPUT**\_**CURRENT**, it returns the current input mode.
+
+Default luabox input mode is **INPUT**\_**ESC**.
+
 * INPUT\_CURRENT
 * INPUT\_ESC
 * INPUT\_ALT
+* INPUT\_MOUSE
 
-#### Output modes ####
+### Output ###
+
+* setoutput( mode )
+
+Luabox has three output options:
+1. OUTPUT\_NORMAL     => [1..8]
+   This mode provides 8 different colors:
+     BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE
+
+2. OUTPUT\_256        => [0..256]
+   In this mode you can leverage the 256 terminal mode:
+   0x00 - 0x07: the 8 colors as in TB\_OUTPUT\_NORMAL
+   0x08 - 0x0f: TB\_\* + TB\_BOLD
+   0x10 - 0xe7: 216 different colors
+   0xe8 - 0xff: 24 different shades of grey
+
+2. OUTPUT\_216        => [0..216]
+   This mode supports the 3rd range of the 256 mode only.
+   But you don't need to provide an offset.
+
+3. OUTPUT\_GRAYSCALE  => [0..23]
+   This mode supports the 4th range of the 256 mode only.
+   But you dont need to provide an offset
+
 * OUTPUT\_CURRENT
 * OUTPUT\_NORMAL
 * OUTPUT\_256
@@ -41,7 +82,7 @@ local lb = require('luabox')
 ### Peeking and processing an event ###
 
 * peek( [timeout] ) -- timeout is infinite by default
-* setcallback( event, callback )
+* setcallback( event, callback ) -- see events/callback list below
 
 Example usage
 
@@ -59,7 +100,6 @@ while true do
   lb.peek()
 end
 ```
-
 
 #### Events ####
 * EVENT\_KEY -- callback( ch, key, mod )
@@ -84,7 +124,6 @@ end
 
 ### Changing content ###
 * clear( [textcolor, bgcolor] )
-* print( str, x, y, [textcolor, bgcolor, width, height, mode] )
 * setcell( ch, x, y, [textcolor, bgcolor] )
 
 #### Text color modifiers ####
@@ -99,11 +138,15 @@ To use them simply add to color i.e.
 local boldText = lb.gray( 1 ) + lb.BOLD 
 ```
 
-#### Printing modes ####
+### Highlevel print ###
+
+* print( str, x, y, [textcolor, bgcolor, width, height, mode] )
+
+Where mode is one of:
+
 * WRAP
 * TRUNC
 * REPEAT
-
 
 ### Rendering ###
 * present()
@@ -114,7 +157,6 @@ local boldText = lb.gray( 1 ) + lb.BOLD
 ### Color conversions ###
 
 Functions assume that 0 <= color <= 1.
-
 * rgb( r, g, b ) -- for output mode OUTPUT\_256
 * gray( gr ) -- for output mode OUTPUT\_256
 * rgb216( r, g, b ) -- for output mode OUTPUT\_RGB216
@@ -126,7 +168,6 @@ Functions assume that 0 <= color <= 1.
 * GRAYMAX -- grayscale color range max resolution
 
 ### Example usage ###
-
 See examples folder
 
 ####color.lua####
