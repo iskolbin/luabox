@@ -54,8 +54,6 @@ static uint16_t background = TB_DEFAULT;
 static uint16_t foreground = TB_DEFAULT;
 
 static void write_cursor(int x, int y);
-static void write_sgr_fg(uint16_t fg);
-static void write_sgr_bg(uint16_t bg);
 static void write_sgr(uint16_t fg, uint16_t bg);
 
 static void cellbuf_init(struct cellbuf *buf, int width, int height);
@@ -270,7 +268,7 @@ void tb_blit(int x, int y, int w, int h, const struct tb_cell *cells)
 	}
 }
 
-struct tb_cell *tb_cell_buffer()
+struct tb_cell *tb_cell_buffer(void)
 {
 	return back_buffer.cells;
 }
@@ -372,45 +370,46 @@ static void write_cursor(int x, int y) {
 	WRITE_LITERAL("H");
 }
 
-// can only be called in NORMAL output mode
-static void write_sgr_fg(uint16_t fg) {
-	char buf[32];
-
-	WRITE_LITERAL("\033[3");
-	WRITE_INT(fg-1);
-	WRITE_LITERAL("m");
-}
-
-// can only be called in NORMAL output mode
-static void write_sgr_bg(uint16_t bg) {
-	char buf[32];
-
-	WRITE_LITERAL("\033[4");
-	WRITE_INT(bg-1);
-	WRITE_LITERAL("m");
-}
-
 static void write_sgr(uint16_t fg, uint16_t bg) {
 	char buf[32];
+
+	if (fg == TB_DEFAULT && bg == TB_DEFAULT)
+		return;
 
 	switch (outputmode) {
 	case TB_OUTPUT_256:
 	case TB_OUTPUT_216:
 	case TB_OUTPUT_GRAYSCALE:
-		WRITE_LITERAL("\033[38;5;");
-		WRITE_INT(fg);
-		WRITE_LITERAL("m");
-		WRITE_LITERAL("\033[48;5;");
-		WRITE_INT(bg);
+		WRITE_LITERAL("\033[");
+		if (fg != TB_DEFAULT) {
+			WRITE_LITERAL("38;5;");
+			WRITE_INT(fg);
+			if (bg != TB_DEFAULT) {
+				WRITE_LITERAL(";");
+			}
+		}
+		if (bg != TB_DEFAULT) {
+			WRITE_LITERAL("48;5;");
+			WRITE_INT(bg);
+		}
 		WRITE_LITERAL("m");
 		break;
 	case TB_OUTPUT_NORMAL:
 	default:
-		WRITE_LITERAL("\033[3");
-		WRITE_INT(fg-1);
-		WRITE_LITERAL(";4");
-		WRITE_INT(bg-1);
+		WRITE_LITERAL("\033[");
+		if (fg != TB_DEFAULT) {
+			WRITE_LITERAL("3");
+			WRITE_INT(fg - 1);
+			if (bg != TB_DEFAULT) {
+				WRITE_LITERAL(";");
+			}
+		}
+		if (bg != TB_DEFAULT) {
+			WRITE_LITERAL("4");
+			WRITE_INT(bg - 1);
+		}
 		WRITE_LITERAL("m");
+		break;
 	}
 }
 
@@ -531,24 +530,7 @@ static void send_attr(uint16_t fg, uint16_t bg)
 		if ((fg & TB_REVERSE) || (bg & TB_REVERSE))
 			bytebuffer_puts(&output_buffer, funcs[T_REVERSE]);
 
-		switch (outputmode) {
-		case TB_OUTPUT_256:
-		case TB_OUTPUT_216:
-		case TB_OUTPUT_GRAYSCALE:
-			write_sgr(fgcol, bgcol);
-			break;
-
-		case TB_OUTPUT_NORMAL:
-		default:
-			if (fgcol != TB_DEFAULT) {
-				if (bgcol != TB_DEFAULT)
-					write_sgr(fgcol, bgcol);
-				else
-					write_sgr_fg(fgcol);
-			} else if (bgcol != TB_DEFAULT) {
-				write_sgr_bg(bgcol);
-			}
-		}
+		write_sgr(fgcol, bgcol);
 
 		lastfg = fg;
 		lastbg = bg;

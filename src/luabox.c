@@ -10,9 +10,9 @@
 
 #include "termbox/termbox.h"
 
-#if (LUA_VERSION_NUM==501)
+#if (LUA_VERSION_NUM<=501)
 #define lua_len(L,i) (lua_pushnumber( (L), lua_objlen( (L), (i) )))
-#define luaL_newlib(L,t) (luaL_register( (L), "luabox", (t) ))
+#define luaL_newlib(L,l) (lua_newtable(L), luaL_register(L,NULL,l))
 #endif
 
 #define LUABOX_WRAP   0
@@ -24,12 +24,16 @@
 #define LUABOX_GRAYMAX 23
 
 
+#ifdef _WIN32
+__declspec (dllexport)
+#endif
 int luaopen_luabox( lua_State *L );
 
 struct luabox_State {
 	struct tb_event event;
 	const char TB_EVENT_KEY_[1];
 	const char TB_EVENT_RESIZE_[1];
+	const char TB_EVENT_MOUSE_[1];
 };
 
 static int lua_tb_init( lua_State *L ) {
@@ -244,6 +248,12 @@ static int lua_tb_peek_event( lua_State *L ) {
 		lua_pushnumber( L, event_struct->w );
 		lua_pushnumber( L, event_struct->h );
 		LUABOX_RETURN( TB_EVENT_RESIZE, 2, 0 )
+
+		LUABOX_CALL( TB_EVENT_MOUSE )
+		lua_pushnumber( L, event_struct->x );
+		lua_pushnumber( L, event_struct->y );
+		lua_pushnumber( L, event_struct->key );
+		LUABOX_RETURN( TB_EVENT_MOUSE, 3, 0 )
 	}
 
 	return 0;
@@ -273,6 +283,7 @@ static int luabox_set_callback( lua_State *L ) {
 		switch ( event_type ) {
 			LUABOX_CALLBACK( TB_EVENT_KEY );
 			LUABOX_CALLBACK( TB_EVENT_RESIZE );
+			LUABOX_CALLBACK( TB_EVENT_MOUSE );
 		}
 	}
 
@@ -348,9 +359,17 @@ static void lua_luabox_const( lua_State *L ) {
 	LUABOX_CONST( "ESC", TB_KEY_ESC );
 	LUABOX_CONST( "SPACE", TB_KEY_SPACE );
 
+	LUABOX_CONST( "MOUSE_LEFT", TB_KEY_MOUSE_LEFT );
+	LUABOX_CONST( "MOUSE_RIGHT", TB_KEY_MOUSE_RIGHT );
+	LUABOX_CONST( "MOUSE_MIDDLE", TB_KEY_MOUSE_MIDDLE );
+	LUABOX_CONST( "MOUSE_RELEASE", TB_KEY_MOUSE_RELEASE );
+	LUABOX_CONST( "MOUSE_WHEEL_UP", TB_KEY_MOUSE_WHEEL_UP );
+	LUABOX_CONST( "MOUSE_WHEEL_DOWN", TB_KEY_MOUSE_WHEEL_DOWN );
+
 	LUABOX_CONST( "INPUT_CURRENT", TB_INPUT_CURRENT );
 	LUABOX_CONST( "INPUT_ESC", TB_INPUT_ESC );
 	LUABOX_CONST( "INPUT_ALT", TB_INPUT_ALT );
+	LUABOX_CONST( "INPUT_MOUSE", TB_INPUT_MOUSE );
 
 	LUABOX_CONST( "OUTPUT_CURRENT", TB_OUTPUT_CURRENT );
 	LUABOX_CONST( "OUTPUT_NORMAL", TB_OUTPUT_NORMAL );
@@ -361,6 +380,7 @@ static void lua_luabox_const( lua_State *L ) {
 	LUABOX_CONST( "EVENT_NONE", 0 );
 	LUABOX_CONST( "EVENT_KEY", TB_EVENT_KEY );
 	LUABOX_CONST( "EVENT_RESIZE", TB_EVENT_RESIZE );
+	LUABOX_CONST( "EVENT_MOUSE", TB_EVENT_MOUSE );
 
 	LUABOX_CONST( "DEFAULTCOLOR", TB_DEFAULT);
 	LUABOX_CONST( "BLACK", TB_BLACK );
@@ -387,7 +407,7 @@ static void lua_luabox_const( lua_State *L ) {
 
 #undef LUABOX_CONST
 
-static const luaL_Reg stringext[] = {
+static const luaL_Reg luaboxlib[] = {
 	{"init", lua_tb_init},
 	{"shutdown", lua_tb_shutdown},
 	{"present", lua_tb_present},
@@ -410,14 +430,11 @@ static const luaL_Reg stringext[] = {
 	{NULL, NULL}
 };
 
-#if (LUA_VERSION_NUM==501) 
-int luaopen_luabox( lua_State *L ) {
-#elif (LUA_VERSION_NUM>=502)
-int luaopen_luabox( lua_State *L ) {
-#else
-#error "Sorry, your version of Lua is not supported"
+#ifdef _WIN32
+__declspec (dllexport)
 #endif
-	luaL_newlib( L, stringext );
+int luaopen_luabox( lua_State *L ) {
+	luaL_newlib( L, luaboxlib );
 	lua_luabox_const( L );
 	return 1;
 }

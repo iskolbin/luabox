@@ -4,6 +4,7 @@ local active = true
 local x, y = 10, 10
 local info  = '<none>'
 local info2 = '<none>'
+local info3 = '<none>'
 
 local render = function()
     lb.clear()
@@ -48,7 +49,8 @@ local render = function()
     lb.print( 'Event info', 0, lb.RGBCOLORMAX+22, lb.gray(1) + lb.BOLD + lb.UNDERLINE, lb.gray(0) )
     lb.print( info, 0, lb.RGBCOLORMAX+23, lb.gray(1), lb.gray(0) )
     lb.print( info2, 0, lb.RGBCOLORMAX+24, lb.gray(1), lb.gray(0) )
-    
+    lb.print( info3, 0, lb.RGBCOLORMAX+25, lb.gray(1), lb.gray(0) )
+
     lb.print( ('Screen size: %dx%d'):format( lb.width(), lb.height()), 0, lb.RGBCOLORMAX+28, lb.gray(1), lb.gray(0) )
 
     lb.print( 'Press <ESC> to exit', 0, lb.RGBCOLORMAX+30, lb.gray(1) + lb.REVERSE, lb.gray(0) )
@@ -68,10 +70,14 @@ local onresize = function( w, h )
 	info2 = 'Resize event: w=' .. w .. ' h=' .. h
 end
 
+local onmouse = function( x, y, key )
+	info3 = 'Mouse event: x=' .. x .. ' y= ' .. y .. ' key=' .. key
+end
 
-lb.init( lb.INPUT_CURRENT, lb.OUTPUT_256 )
+lb.init( lb.INPUT_ESC + lb.INPUT_MOUSE, lb.OUTPUT_256 )
 lb.setcallback( lb.EVENT_KEY, onkey )
 lb.setcallback( lb.EVENT_RESIZE, onresize )
+lb.setcallback( lb.EVENT_MOUSE, onmouse )
 
 while active do
     render()

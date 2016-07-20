@@ -5,9 +5,9 @@
 Highlevel Lua bindings to termbox library (see https://github.com/nsf/termbox).  
 
 ## Setup ##
-Building with luarocks
+Building with luarocks from root folder:
 ```sh
-luarocks make luabox
+luarocks make
 ```
 
 To use library in your code you should:
@@ -27,16 +27,16 @@ local lb = require('luabox')
 * setoutput( mode )
 
 #### Input modes ####
-* INPUT_CURRENT
-* INPUT_ESC
-* INPUT_ALT
+* INPUT\_CURRENT
+* INPUT\_ESC
+* INPUT\_ALT
 
 #### Output modes ####
-* OUTPUT_CURRENT
-* OUTPUT_NORMAL
-* OUTPUT_256
-* OUTPUT_RGB216
-* OUTPUT_GRAY24
+* OUTPUT\_CURRENT
+* OUTPUT\_NORMAL
+* OUTPUT\_256
+* OUTPUT\_RGB216
+* OUTPUT\_GRAY24
 
 ### Peeking and processing an event ###
 
@@ -62,8 +62,9 @@ end
 
 
 #### Events ####
-* EVENT_KEY -- callback( ch, key, mod )
-* EVENT_RESIZE -- callback( width, height )
+* EVENT\_KEY -- callback( ch, key, mod )
+* EVENT\_RESIZE -- callback( width, height )
+* EVENT\_MOUSE -- callback( x, y, key )
 
 #### Predefined keys ####
 * F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12
@@ -72,6 +73,14 @@ end
 * UP, LEFT, DOWN, RIGHT
 * BACKSPACE, ENTER, SPACE
 * ESC
+
+#### Mouse keys ####
+* MOUSE\_LEFT
+* MOUSE\_RIGHT
+* MOUSE\_MIDDLE
+* MOUSE\_RELEASE
+* MOUSE\_WHEEL\_UP
+* MOUSE\_WHEEL\_DOWN
 
 ### Changing content ###
 * clear( [textcolor, bgcolor] )
@@ -88,7 +97,6 @@ To use them simply add to color i.e.
 
 ```lua
 local boldText = lb.gray( 1 ) + lb.BOLD 
-
 ```
 
 #### Printing modes ####
@@ -107,10 +115,10 @@ local boldText = lb.gray( 1 ) + lb.BOLD
 
 Functions assume that 0 <= color <= 1.
 
-* rgb( r, g, b ) -- for output mode OUTPUT_256
-* gray( gr ) -- for output mode OUTPUT_256
-* rgb216( r, g, b ) -- for output mode OUTPUT_RGB216
-* gray24( gr ) -- for output mode OUTPUT_GRAY24
+* rgb( r, g, b ) -- for output mode OUTPUT\_256
+* gray( gr ) -- for output mode OUTPUT\_256
+* rgb216( r, g, b ) -- for output mode OUTPUT\_RGB216
+* gray24( gr ) -- for output mode OUTPUT\_GRAY24
 
 #### Color constants ####
 * RGBMAX -- RGB colors count - 1
@@ -134,4 +142,4 @@ Primitive file manager
 REPL for Lua
 
 ####corerl.lua####
-Clone of small rogulike game, see http://www.locklessinc.com/articles/512byte_roguelike/
+Clone of small rogulike game, see http://www.locklessinc.com/articles/512byte\_roguelike/
