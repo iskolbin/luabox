@@ -147,7 +147,7 @@ static int luabox_print( lua_State *L ) {
 	int CR = 0;
 
 	lua_len( L, 1 );
-	len = lensaved = lua_tointeger( L, -1 );
+	len = lensaved = (int) lua_tonumber( L, -1 );
 	lua_pop( L, 1 );
 
 	fg = lua_isnumber( L, 4 ) ? lua_tonumber( L, 4 ) : TB_DEFAULT;
@@ -225,7 +225,7 @@ static int lua_tb_peek_event( lua_State *L ) {
 	lbstate = lua_touserdata( L, -1 );
 	event_struct = &lbstate->event;
 	if ( lua_isnumber( L, 1 ) ) {
-		event_type = tb_peek_event( event_struct, lua_tointeger( L, 1 ));
+		event_type = tb_peek_event( event_struct, (int) lua_tonumber( L, 1 ));
 	} else {
 		event_type = tb_poll_event( event_struct );
 	}
