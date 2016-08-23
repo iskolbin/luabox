@@ -63,7 +63,7 @@ static void bytebuffer_resize(struct bytebuffer *b, int len) {
 }
 
 static void bytebuffer_flush(struct bytebuffer *b, int fd) {
-	write(fd, b->buf, b->len);
+	if (write(fd, b->buf, b->len));
 	bytebuffer_clear(b);
 }
 

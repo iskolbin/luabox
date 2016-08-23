@@ -1,5 +1,5 @@
 package = 'LuaBox'
-version = '1.0-3'
+version = '1.0-4'
 source = {
 	url = 'git://github.com/iskolbin/luabox',
 	tag = 'v1.0',

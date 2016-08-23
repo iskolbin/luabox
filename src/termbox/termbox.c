@@ -18,6 +18,7 @@
 #include "bytebuffer.inl"
 #include "term.inl"
 #include "input.inl"
+#include "wcwidth.inl"
 
 struct cellbuf {
 	int width;
@@ -175,7 +176,7 @@ void tb_present(void)
 		for (x = 0; x < front_buffer.width; ) {
 			back = &CELL(&back_buffer, x, y);
 			front = &CELL(&front_buffer, x, y);
-			w = wcwidth(back->ch);
+			w = xwcwidth(back->ch);
 			if (w < 1) w = 1;
 			if (memcmp(back, front, sizeof(struct tb_cell)) == 0) {
 				x += w;
@@ -570,7 +571,7 @@ static void sigwinch_handler(int xxx)
 {
 	(void) xxx;
 	const int zzz = 1;
-	write(winch_fds[1], &zzz, sizeof(int));
+	if (write(winch_fds[1], &zzz, sizeof(int)));
 }
 
 static void update_size(void)
@@ -660,7 +661,7 @@ static int wait_fill_event(struct tb_event *event, struct timeval *timeout)
 		if (FD_ISSET(winch_fds[0], &events)) {
 			event->type = TB_EVENT_RESIZE;
 			int zzz = 0;
-			read(winch_fds[0], &zzz, sizeof(int));
+			if (read(winch_fds[0], &zzz, sizeof(int)));
 			buffer_size_change_request = 1;
 			get_term_size(&event->w, &event->h);
 			return TB_EVENT_RESIZE;
