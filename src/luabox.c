@@ -145,6 +145,7 @@ static int luabox_print( lua_State *L ) {
 	const char *chstrfrom = chstr;
 	int mode;
 	int CR = 0;
+	int NL = 0;
 
 	lua_len( L, 1 );
 	len = lensaved = (int) lua_tonumber( L, -1 );
@@ -165,7 +166,9 @@ static int luabox_print( lua_State *L ) {
 
 		if ( ch == '\n' && CR ) {
 			CR = 0;
-		} else if ( ch == '\r' || ch == '\n' || x >= w ) {
+			NL = 0;
+		} else if ( ch == '\r' || ch == '\n' || NL ) {
+			NL = 0;
 			if ( mode == LUABOX_TRUNC || y >= h-1 ) {
 				break;
 			} else {
@@ -175,7 +178,11 @@ static int luabox_print( lua_State *L ) {
 			}
 		} else {
 			tb_change_cell( x, y, ch, fg, bg );
-			x++;
+			if ( x >= w ) {
+				NL = 1;
+			} else {
+				x++;
+			}
 		}
 		len -= chlen;
 		chstr += chlen;
