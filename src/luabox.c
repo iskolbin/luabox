@@ -15,9 +15,10 @@
 #define luaL_newlib(L,l) (lua_newtable(L), luaL_register(L,NULL,l))
 #endif
 
-#define LUABOX_WRAP   0
-#define LUABOX_TRUNC  1
-#define LUABOX_REPEAT 2
+#define LUABOX_WRAP     0
+#define LUABOX_WRAP_RAW 1
+#define LUABOX_TRUNC    2
+#define LUABOX_REPEAT   3
 
 #define LUABOX_RGBCOLORMAX 5
 #define LUABOX_RGBMAX  ((LUABOX_RGBCOLORMAX+1)*(LUABOX_RGBCOLORMAX+1)*(LUABOX_RGBCOLORMAX+1)-1)
@@ -146,6 +147,7 @@ static int luabox_print( lua_State *L ) {
 	int mode;
 	int CR = 0;
 	int NL = 0;
+	int wrapped = 0;
 
 	lua_len( L, 1 );
 	len = lensaved = (int) lua_tonumber( L, -1 );
@@ -166,8 +168,25 @@ static int luabox_print( lua_State *L ) {
 
 		if ( ch == '\n' && CR ) {
 			CR = 0;
-			NL = 0;
-		} else if ( ch == '\r' || ch == '\n' || NL ) {
+		} else if ( ch == '\r' || ch == '\n' ) {
+			NL = 1;
+		} else {
+			tb_change_cell( x, y, ch, fg, bg );
+			if ( x >= w-1 ) {
+				NL = 1;
+				wrapped = 1;
+			} else {
+				if ( wrapped && mode == LUABOX_WRAP && ( ch == ' ' || ch == '\t' ) && x == xfrom ) {
+				} else {
+					x++;
+					wrapped = 0;
+				}
+			}
+		}
+		len -= chlen;
+		chstr += chlen;
+
+		if ( NL ) {
 			NL = 0;
 			if ( mode == LUABOX_TRUNC || y >= h-1 ) {
 				break;
@@ -176,20 +195,33 @@ static int luabox_print( lua_State *L ) {
 				y++;
 				x = xfrom;
 			}
-		} else {
-			tb_change_cell( x, y, ch, fg, bg );
-			if ( x >= w ) {
-				NL = 1;
-			} else {
-				x++;
-			}
 		}
-		len -= chlen;
-		chstr += chlen;
 
 		if ( len <= 0 && mode == LUABOX_REPEAT ) {
 			chstr = chstrfrom;
 			len = lensaved;
+		}
+	}
+
+	return 0;
+}
+
+static int luabox_fill( lua_State *L ) {
+	const char *chstr = luaL_checkstring( L, 1 );
+	int x0 = luaL_checkint( L, 2 );
+	int y0 = luaL_checkint( L, 3 );
+	int w = luaL_checkint( L, 4 );
+	int h = luaL_checkint( L, 5 );
+	uint16_t fg = lua_isnumber( L, 6 ) ? lua_tonumber( L, 6 ) : TB_DEFAULT;
+	uint16_t bg = lua_isnumber( L, 7 ) ? lua_tonumber( L, 7 ) : TB_DEFAULT;
+	int x, y;
+	uint32_t ch;
+	
+	tb_utf8_char_to_unicode( &ch, chstr );
+			
+	for ( x = x0; x < x0 + w; x++ ) {
+		for ( y = y0; y < y0 + h; y++ ) {
+			tb_change_cell( x, y, ch, fg, bg );
 		}
 	}
 
@@ -404,6 +436,7 @@ static void lua_luabox_const( lua_State *L ) {
 	LUABOX_CONST( "REVERSE", TB_REVERSE );
 
 	LUABOX_CONST( "WRAP", LUABOX_WRAP );
+	LUABOX_CONST( "WRAP_RAW", LUABOX_WRAP_RAW );
 	LUABOX_CONST( "REPEAT", LUABOX_REPEAT );
 	LUABOX_CONST( "TRUNC", LUABOX_TRUNC );
 
@@ -429,6 +462,7 @@ static const luaL_Reg luaboxlib[] = {
 
 	{"setcallback", luabox_set_callback},
 	{"print", luabox_print},
+	{"fill", luabox_fill},
 	{"rgb216", luabox_rgb216},
 	{"gray24", luabox_gray24},
 	{"rgb", luabox_rgb},

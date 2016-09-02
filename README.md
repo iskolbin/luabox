@@ -140,13 +140,15 @@ To use them simply add to color i.e.
 local boldText = lb.gray( 1 ) + lb.BOLD 
 ```
 
-### Highlevel print ###
+### Highlevel functions ###
 
+* fill( ch, x, y, w, h, [textcolor, bgcolor] )
 * print( str, x, y, [textcolor, bgcolor, width, height, mode] )
 
 Where mode is one of:
 
-* WRAP
+* WRAP (default)
+* WRAP\_RAW
 * TRUNC
 * REPEAT
 
