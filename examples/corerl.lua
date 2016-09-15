@@ -1,6 +1,6 @@
 -- Based on http://www.locklessinc.com/articles/512byte_roguelike/
 
-local luabox = require('luabox')
+local Luabox = require('luabox')
 
 local SIZEX	= 128
 local SIZEY	= 64
@@ -81,11 +81,11 @@ local function init_map()
 end
 
 local function draw_screen()
-	luabox.clear()
+	Luabox.clear()
 	
 	-- Dump map
 	for y = 1, SIZEY do
-		luabox.print( table.concat( map[y] ), 1, y )
+		Luabox.print( table.concat( map[y] ), 1, y )
 	end
 end
 
@@ -153,15 +153,15 @@ end
 
 init()
 
-luabox.init( luabox.INPUT_CURRENT, luabox.OUTPUT_256 )
-luabox.setcallback( luabox.EVENT_KEY, function( ch, key, mode ) 
+Luabox.init( Luabox.INPUT_CURRENT, Luabox.OUTPUT_256 )
+Luabox.setcallback( Luabox.EVENT_KEY, function( ch, key, mode ) 
 	update( ch ) 
 end )
 
 while state ~= 'exit' do
 	draw_screen()
-	luabox.present()
-	luabox.peek()
+	Luabox.present()
+	Luabox.peek()
 end
 
-luabox.shutdown()
+Luabox.shutdown()

@@ -1,4 +1,4 @@
-local lb = require('luabox')
+local Luabox = require('luabox')
 local active = true
 
 local x, y = 10, 10
@@ -7,59 +7,59 @@ local info2 = '<none>'
 local info3 = '<none>'
 
 local render = function()
-    lb.clear()
-    lb.print( 'Palette', 0, 0, lb.gray(1) + lb.BOLD + lb.UNDERLINE, lb.gray(0) )
+    Luabox.clear()
+    Luabox.print( 'Palette', 0, 0, Luabox.grayf(1) + Luabox.BOLD + Luabox.UNDERLINE, Luabox.grayf(0) )
 
-    for i = 0, lb.RGBCOLORMAX do
-        for j = 0, lb.RGBCOLORMAX do
-            for k = 0, lb.RGBCOLORMAX do
-                local x = i + 6*k
-                local y = j + 1
-                lb.print( ' ', x, y, 0, lb.rgb( i/lb.RGBCOLORMAX, j/lb.RGBCOLORMAX, k/lb.RGBCOLORMAX ))
+    for r = 0, Luabox.RGBCOLORMAX do
+        for g = 0, Luabox.RGBCOLORMAX do
+            for b = 0, Luabox.RGBCOLORMAX do
+                local x = b + 6*g
+                local y = r + 1
+                Luabox.print( ' ', x, y, 0, Luabox.rgbf( r/Luabox.RGBCOLORMAX, g/Luabox.RGBCOLORMAX, b/Luabox.RGBCOLORMAX ))
             end
         end
     end
 
-    lb.print( 'Grayscale', 0, lb.RGBCOLORMAX+3, lb.gray(1) + lb.BOLD + lb.UNDERLINE, lb.gray(0) )
-    for i = 0, lb.GRAYMAX do
-        lb.print( ' ', i, lb.RGBCOLORMAX+4, 0, lb.gray(i/lb.GRAYMAX))
+    Luabox.print( 'Grayscale', 0, Luabox.RGBCOLORMAX+3, Luabox.grayf(1) + Luabox.BOLD + Luabox.UNDERLINE, Luabox.grayf(0) )
+    for i = 0, Luabox.GRAYMAX do
+        Luabox.print( ' ', i, Luabox.RGBCOLORMAX+4, 0, Luabox.grayf(i/Luabox.GRAYMAX))
     end
 
-    local ROW = lb.RGBCOLORMAX+6
-    lb.print( 'Mix', 0, ROW, lb.gray(1) + lb.BOLD + lb.UNDERLINE, lb.gray(0) )
+    local ROW = Luabox.RGBCOLORMAX+6
+    Luabox.print( 'Mix', 0, ROW, Luabox.grayf(1) + Luabox.BOLD + Luabox.UNDERLINE, Luabox.grayf(0) )
 
-    for i = 0, 10*lb.RGBCOLORMAX do
-        local v = 0.1*i/lb.RGBCOLORMAX
-        lb.print( ' ', i, ROW+1, 0, lb.rgb(v,0,0))
-        lb.print( ' ', i, ROW+2, 0, lb.rgb(0,v,0))
-        lb.print( ' ', i, ROW+3, 0, lb.rgb(0,0,v))
-        lb.print( ' ', i, ROW+4, 0, lb.rgb(0,v,v))
-        lb.print( ' ', i, ROW+5, 0, lb.rgb(v,0,v))
-        lb.print( ' ', i, ROW+6, 0, lb.rgb(v,v,0))
-        lb.print( ' ', i, ROW+7, 0, lb.rgb(v,v,v))
-        lb.print( ' ', i, ROW+8, 0, lb.rgb(0.5*v,v,v))
-        lb.print( ' ', i, ROW+9, 0, lb.rgb(v,0.5*v,v))
-        lb.print( ' ', i, ROW+10, 0, lb.rgb(v,v,0.5*v))
-        lb.print( ' ', i, ROW+11, 0, lb.rgb(0.5*v,0.5*v,v))
-        lb.print( ' ', i, ROW+12, 0, lb.rgb(v,0.5*v,0.5*v))
-        lb.print( ' ', i, ROW+13, 0, lb.rgb(0.5*v,v,0.5*v))
-        lb.print( ' ', i, ROW+14, 0, lb.rgb(0.5*v,0.5*v,0.5*v))
-    end
+    for i = 0, 12*Luabox.RGBCOLORMAX do
+        local v = 0.1*i/Luabox.RGBCOLORMAX
+        Luabox.print( ' ', i, ROW+1, 0, Luabox.rgbf(v,0,0))
+        Luabox.print( ' ', i, ROW+2, 0, Luabox.rgbf(0,v,0))
+        Luabox.print( ' ', i, ROW+3, 0, Luabox.rgbf(0,0,v))
+        Luabox.print( ' ', i, ROW+4, 0, Luabox.rgbf(0,v,v))
+        Luabox.print( ' ', i, ROW+5, 0, Luabox.rgbf(v,0,v))
+        Luabox.print( ' ', i, ROW+6, 0, Luabox.rgbf(v,v,0))
+        Luabox.print( ' ', i, ROW+7, 0, Luabox.rgbf(v,v,v))
+        Luabox.print( ' ', i, ROW+8, 0, Luabox.rgbf(0.5*v,v,v))
+        Luabox.print( ' ', i, ROW+9, 0, Luabox.rgbf(v,0.5*v,v))
+        Luabox.print( ' ', i, ROW+10, 0, Luabox.rgbf(v,v,0.5*v))
+        Luabox.print( ' ', i, ROW+11, 0, Luabox.rgbf(0.5*v,0.5*v,v))
+        Luabox.print( ' ', i, ROW+12, 0, Luabox.rgbf(v,0.5*v,0.5*v))
+        Luabox.print( ' ', i, ROW+13, 0, Luabox.rgbf(0.5*v,v,0.5*v))
+        Luabox.print( ' ', i, ROW+14, 0, Luabox.rgbf(0.5*v,0.5*v,0.5*v))
+		end
 
-    lb.print( 'Event info', 0, lb.RGBCOLORMAX+22, lb.gray(1) + lb.BOLD + lb.UNDERLINE, lb.gray(0) )
-    lb.print( info, 0, lb.RGBCOLORMAX+23, lb.gray(1), lb.gray(0) )
-    lb.print( info2, 0, lb.RGBCOLORMAX+24, lb.gray(1), lb.gray(0) )
-    lb.print( info3, 0, lb.RGBCOLORMAX+25, lb.gray(1), lb.gray(0) )
+    Luabox.print( 'Event info', 0, Luabox.RGBCOLORMAX+22, Luabox.grayf(1) + Luabox.BOLD + Luabox.UNDERLINE, Luabox.grayf(0) )
+    Luabox.print( info, 0, Luabox.RGBCOLORMAX+23, Luabox.grayf(1), Luabox.grayf(0) )
+    Luabox.print( info2, 0, Luabox.RGBCOLORMAX+24, Luabox.grayf(1), Luabox.grayf(0) )
+    Luabox.print( info3, 0, Luabox.RGBCOLORMAX+25, Luabox.grayf(1), Luabox.grayf(0) )
 
-    lb.print( ('Screen size: %dx%d'):format( lb.width(), lb.height()), 0, lb.RGBCOLORMAX+28, lb.gray(1), lb.gray(0) )
+    Luabox.print( ('Screen size: %dx%d'):format( Luabox.width(), Luabox.height()), 0, Luabox.RGBCOLORMAX+28, Luabox.grayf(1), Luabox.grayf(0) )
 
-    lb.print( 'Press <ESC> to exit', 0, lb.RGBCOLORMAX+30, lb.gray(1) + lb.REVERSE, lb.gray(0) )
+    Luabox.print( 'Press <ESC> to exit', 0, Luabox.RGBCOLORMAX+30, Luabox.grayf(1) + Luabox.REVERSE, Luabox.grayf(0) )
 
-    lb.present()
+    Luabox.present()
 end
 
 local onkey = function( ch, key, mod )
-    if key == lb.ESC then
+    if key == Luabox.ESC then
         active = false
     end
 
@@ -71,17 +71,27 @@ local onresize = function( w, h )
 end
 
 local onmouse = function( x, y, key )
-	info3 = 'Mouse event: x=' .. x .. ' y= ' .. y .. ' key=' .. key
+	local msg = ''
+	if key == Luabox.MOUSE_LEFT then msg = '<LEFT>'
+	elseif key == Luabox.MOUSE_RIGHT then msg = '<RIGHT>'
+	elseif key == Luabox.MOUSE_RELEASE then msg = '<RELEASE>'
+	elseif key == Luabox.MOUSE_WHEEL_UP then msg = '<WHEEL UP>'
+	elseif key == Luabox.MOUSE_WHEEL_DOWN then msg = '<WHEEL DOWN>'
+	end
+
+	local ch, fg, bg = Luabox.getcell( x, y )
+
+	info3 = 'Mouse event: x=' .. x .. ' y= ' .. y .. ' key=' .. msg .. ' ch=' .. ch .. ' fg=' .. fg .. ' bg=' .. bg
 end
 
-lb.init( lb.INPUT_ESC + lb.INPUT_MOUSE, lb.OUTPUT_256 )
-lb.setcallback( lb.EVENT_KEY, onkey )
-lb.setcallback( lb.EVENT_RESIZE, onresize )
-lb.setcallback( lb.EVENT_MOUSE, onmouse )
+Luabox.init( Luabox.INPUT_ESC + Luabox.INPUT_MOUSE, Luabox.OUTPUT_256 )
+Luabox.setcalLuaboxack( Luabox.EVENT_KEY, onkey )
+Luabox.setcalLuaboxack( Luabox.EVENT_RESIZE, onresize )
+Luabox.setcalLuaboxack( Luabox.EVENT_MOUSE, onmouse )
 
 while active do
     render()
-    lb.peek()
+    Luabox.peek()
 end
 
-lb.shutdown()
+Luabox.shutdown()

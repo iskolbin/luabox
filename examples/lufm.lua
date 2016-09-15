@@ -1,10 +1,14 @@
-local lb = require('luabox')
-local lfs = require('lfs')
+local Luabox = require('luabox')
+local ok, lfs = pcall( require, 'lfs' )
+
+assert( ok, 'Lua file system is not installed; try\nluarocks install lfs' )
+
+Luabox.init( Luabox.INPUT_CURRENT, Luabox.OUTPUT_256 )
 
 local lufm = {
 	active = true,
 	
-	rgb = {
+	rgbf = {
 		path = {1,1,0},
 		folder = {0,0,1},
 		executable = {0,1,0},
@@ -12,18 +16,18 @@ local lufm = {
 		link = {0,1,1},
 	},
 
-	gray = {},
+	grayf = {},
 
 	getcolor = function( self, key )
-		local rgb = self.rgb[key]
-		if rgb then
-			return lb.rgb( rgb[1], rgb[2], rgb[3] )
+		local rgbf = self.rgbf[key]
+		if rgbf then
+			return Luabox.rgbf( rgbf[1], rgbf[2], rgbf[3] )
 		else
-			local gray = self.gray[key]
-			if gray then
-				return lb.gray( gray )
+			local grayf = self.grayf[key]
+			if grayf then
+				return Luabox.grayf( grayf )
 			else
-				return lb.gray( 0 )
+				return Luabox.grayf( 0 )
 			end
 		end
 	end,
@@ -101,23 +105,23 @@ local lufm = {
 	activefilters = {},
 
 	render = function( self )
-    lb.clear()
-		lb.print( lfs.currentdir(), 0, 0, self:getcolor'path', lb.gray(0))
+    Luabox.clear()
+		Luabox.print( lfs.currentdir(), 0, 0, self:getcolor'path', Luabox.grayf(0))
    	local i = 0
-		for i = 1, math.min( self.pagepos+#self.files-1, lb.height()) do
+		for i = 1, math.min( self.pagepos+#self.files-1, Luabox.height()) do
 			local f = self.files[i+self.pagepos-1]
-			local rgb = f.attr.mode == 'directory' and self:getcolor'folder' or 
+			local rgbf = f.attr.mode == 'directory' and self:getcolor'folder' or 
 				f.attr.permissions:match('x') and self:getcolor'executable' or
 				f.attr.mode == 'link' and self:getcolor'link' or
 				self:getcolor'common'
 			
 			if i+self.pagepos-1 == self.pos then
-				lb.print( f.name, 1, i, lb.gray(0), rgb )
+				Luabox.print( f.name, 1, i, Luabox.grayf(0), rgbf )
 			else	
-				lb.print( f.name, 1, i, rgb, lb.gray(0))
+				Luabox.print( f.name, 1, i, rgbf, Luabox.grayf(0))
 			end
 		end
-		lb.present()
+		Luabox.present()
 	end,
 	
 	exit = function( self )
@@ -126,7 +130,7 @@ local lufm = {
 
 	setpos = function( self, pos )
 		self.pos = pos
-		while self.pos-self.pagepos >= lb.height() do self.pagepos = self.pagepos + 1 end
+		while self.pos-self.pagepos >= Luabox.height() do self.pagepos = self.pagepos + 1 end
 		while self.pos-self.pagepos < 0 do self.pagepos = self.pagepos - 1 end
 	end,
 
@@ -137,10 +141,10 @@ local lufm = {
 	end,
 
 	onkey = function( self, ch, key, mod )
-		if key == lb.ESC then self:exit()
-    elseif key == lb.DOWN and self.pos < #self.filteredfiles then self:setpos( self.pos + 1 )
-    elseif key == lb.UP and self.pos > 1 then self:setpos( self.pos - 1 )
-		elseif key == lb.ENTER then self:exec()
+		if key == Luabox.ESC then self:exit()
+    elseif key == Luabox.DOWN and self.pos < #self.filteredfiles then self:setpos( self.pos + 1 )
+    elseif key == Luabox.UP and self.pos > 1 then self:setpos( self.pos - 1 )
+		elseif key == Luabox.ENTER then self:exec()
 		end
 	end,
 	
@@ -149,14 +153,13 @@ local lufm = {
 }
 
 
-lb.init( lb.INPUT_CURRENT, lb.OUTPUT_256 )
-lb.setcallback( lb.EVENT_KEY, function(ch,key,mod) lufm:onkey(ch,key,mod) end )
-lb.setcallback( lb.EVENT_RESIZE, function(w,h) lufm:onresize(w,h) end )
+Luabox.setcallback( Luabox.EVENT_KEY, function(ch,key,mod) lufm:onkey(ch,key,mod) end )
+Luabox.setcallback( Luabox.EVENT_RESIZE, function(w,h) lufm:onresize(w,h) end )
 
 lufm:chdir(lfs.currentdir())
 while lufm.active do
 	lufm:render()
-	lb.peek()
+	Luabox.peek()
 end
 
-lb.shutdown()
+Luabox.shutdown()

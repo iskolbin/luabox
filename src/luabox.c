@@ -114,7 +114,7 @@ static int lua_tb_set_cursor( lua_State *L ) {
 	return 0;
 }
 
-static int lua_tb_set_cell( lua_State *L ) {
+static int luabox_setcell( lua_State *L ) {
 	const char *chstr = luaL_checkstring( L, 1 );
 	int x = luaL_checkint( L, 2 );
 	int y = luaL_checkint( L, 3 );
@@ -240,6 +240,25 @@ static int lua_tb_select_output_mode( lua_State *L ) {
 	return 1;
 }
 
+#ifndef CELL
+#define CELL(buf, x, y) (buf)->cells[(y) * (buf)->width + (x)]
+#endif
+
+static int luabox_getcell( lua_State *L ) {
+	uint16_t x = luaL_checknumber( L, 1 );
+ 	uint16_t y = luaL_checknumber( L, 2 );
+	if ( x >= 0 && x < tb_width() && y >= 0 && y < tb_height()) {
+		struct tb_cell *cell = (tb_cell_buffer() + y * tb_width() + x);
+		lua_pushnumber( L, cell->ch );
+		lua_pushnumber( L, cell->fg );
+		lua_pushnumber( L, cell->bg );
+		return 3;
+	} else {
+		luaL_error( L, "coordinates out of bounds" );
+		return 0;
+	}
+}
+
 #define LUABOX_CALL(event) \
 	case event: \
 lua_pushlightuserdata( L, (void *) &lbstate->event ## _ ); \
@@ -252,7 +271,6 @@ if ( lua_isfunction( L, -1 )) {
 	} \
 } \
 return 0; \
-
 
 static int lua_tb_peek_event( lua_State *L ) {
 	int event_type = 0;
@@ -332,32 +350,64 @@ static int luabox_set_callback( lua_State *L ) {
 
 #undef LUABOX_CALLBACK
 
-static int luabox_rgb216( lua_State *L ) {
-	uint16_t r = luaL_checknumber( L, 1 ) * LUABOX_RGBCOLORMAX;
-	uint16_t g = luaL_checknumber( L, 2 ) * LUABOX_RGBCOLORMAX;
-	uint16_t b = luaL_checknumber( L, 3 ) * LUABOX_RGBCOLORMAX;
-	lua_pushnumber( L, r*(LUABOX_RGBCOLORMAX+1)*(LUABOX_RGBCOLORMAX+1) + g*(LUABOX_RGBCOLORMAX+1) + b + 16 );
-	return 1;
-}
-
-static int luabox_gray24( lua_State *L ) {
-	lua_Number gr = luaL_checknumber( L, 1 );
-	lua_pushnumber( L, (gr*LUABOX_GRAYMAX));
-	return 1;
+static int luabox_gray_internal( lua_State *L, lua_Number mul ) {
+	lua_Number gr, offset = 0;
+	switch ( tb_select_output_mode( TB_OUTPUT_CURRENT )) {
+		case TB_OUTPUT_NORMAL: 
+			luaL_error( L, "wrong output mode for grayscale colors: NORMAL" );
+			return 0;
+		case TB_OUTPUT_216: 
+			luaL_error( L, "wrong output mode for grayscale colors: 216" );
+			return 0;
+		case TB_OUTPUT_256:
+			offset = 0xe8;
+		case TB_OUTPUT_GRAYSCALE:
+			gr = mul * luaL_checknumber( L, -1 );
+			lua_pushnumber( L, gr + offset );
+			return 1;
+		default:
+			luaL_error( L, "wrong output mode for grayscale colors: UNKNOWN" );
+			return 0;
+	}
 }
 
 static int luabox_gray( lua_State *L ) {
-	lua_Number gr = luaL_checknumber( L, 1 );
-	lua_pushnumber( L, (gr*LUABOX_GRAYMAX + 232));
-	return 1;
+	return luabox_gray_internal( L, 1 );
+}
+
+static int luabox_grayf( lua_State *L ) {
+	return luabox_gray_internal( L, LUABOX_GRAYMAX );
+}
+
+static int luabox_rgb_internal( lua_State *L, uint16_t mul ) {
+	uint16_t r, g, b, offset = 0;
+	switch ( tb_select_output_mode( TB_OUTPUT_CURRENT )) {
+		case TB_OUTPUT_NORMAL: 
+			luaL_error( L, "wrong output mode for RGB colors: NORMAL" );
+			return 0;
+		case TB_OUTPUT_GRAYSCALE: 
+			luaL_error( L, "wrong output mode for RGB colors: GRAYSCALE" );
+			return 0;
+		case TB_OUTPUT_256:
+			offset = 0x10;
+		case TB_OUTPUT_216: 
+			r = mul*luaL_checknumber( L, 1 ); r *= (LUABOX_RGBCOLORMAX+1) * (LUABOX_RGBCOLORMAX+1);
+			g = mul*luaL_checknumber( L, 2 ); g *= (LUABOX_RGBCOLORMAX+1);
+			b = mul*luaL_checknumber( L, 3 );
+			lua_pushnumber( L, (r + g + b) + offset );
+			return 1;
+		default:
+			luaL_error( L, "wrong output mode for RGB colors: UNKNOWN" );
+			return 0;
+	}
 }
 
 static int luabox_rgb( lua_State *L ) {
-	uint16_t r = luaL_checknumber( L, 1 ) * LUABOX_RGBCOLORMAX;
-	uint16_t g = luaL_checknumber( L, 2 ) * LUABOX_RGBCOLORMAX;
-	uint16_t b = luaL_checknumber( L, 3 ) * LUABOX_RGBCOLORMAX;
-	lua_pushnumber( L, r*(LUABOX_RGBCOLORMAX+1)*(LUABOX_RGBCOLORMAX+1) + g*(LUABOX_RGBCOLORMAX+1) + b + 16 );
-	return 1;
+	return luabox_rgb_internal( L, 1 );
+}
+
+static int luabox_rgbf( lua_State *L ) {
+	return luabox_rgb_internal( L, LUABOX_RGBCOLORMAX );
 }
 
 
@@ -421,7 +471,7 @@ static void lua_luabox_const( lua_State *L ) {
 	LUABOX_CONST( "EVENT_RESIZE", TB_EVENT_RESIZE );
 	LUABOX_CONST( "EVENT_MOUSE", TB_EVENT_MOUSE );
 
-	LUABOX_CONST( "DEFAULTCOLOR", TB_DEFAULT);
+	LUABOX_CONST( "DEFAULT", TB_DEFAULT);
 	LUABOX_CONST( "BLACK", TB_BLACK );
 	LUABOX_CONST( "RED", TB_RED);
 	LUABOX_CONST( "GREEN", TB_GREEN );
@@ -454,21 +504,20 @@ static const luaL_Reg luaboxlib[] = {
 	{"width", lua_tb_width},
 	{"height", lua_tb_height},
 	{"clear", lua_tb_clear},
-	{"setcell", lua_tb_set_cell},
+	{"setcell", luabox_setcell},
+	{"getcell", luabox_getcell},
 	{"setinput", lua_tb_select_input_mode},
 	{"setoutput", lua_tb_select_output_mode},
 	{"peek", lua_tb_peek_event},
 	{"setcursor", lua_tb_set_cursor},
-
 	{"setcallback", luabox_set_callback},
 	{"print", luabox_print},
 	{"fill", luabox_fill},
-	{"rgb216", luabox_rgb216},
-	{"gray24", luabox_gray24},
 	{"rgb", luabox_rgb},
 	{"gray", luabox_gray},
-
-	{NULL, NULL}
+	{"rgbf", luabox_rgbf},
+	{"grayf", luabox_grayf},
+	{NULL, NULL},
 };
 
 #ifdef _WIN32
