@@ -85,9 +85,9 @@ local onmouse = function( x, y, key )
 end
 
 Luabox.init( Luabox.INPUT_ESC + Luabox.INPUT_MOUSE, Luabox.OUTPUT_256 )
-Luabox.setcalLuaboxack( Luabox.EVENT_KEY, onkey )
-Luabox.setcalLuaboxack( Luabox.EVENT_RESIZE, onresize )
-Luabox.setcalLuaboxack( Luabox.EVENT_MOUSE, onmouse )
+Luabox.setcallback( Luabox.EVENT_KEY, onkey )
+Luabox.setcallback( Luabox.EVENT_RESIZE, onresize )
+Luabox.setcallback( Luabox.EVENT_MOUSE, onmouse )
 
 while active do
     render()
