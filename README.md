@@ -1,4 +1,4 @@
-# README #
+# Luabox #
 
 ## Quick summary ##
 
