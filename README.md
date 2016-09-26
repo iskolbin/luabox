@@ -1,7 +1,5 @@
 # Luabox #
 
-## Quick summary ##
-
 Highlevel Lua bindings to [**termbox** library](https://github.com/nsf/termbox). Input and output sections of this readme is just little edited version from original sources, see src/termbox/termbox.h lines 233 and 259.  
 
 ## Setup ##
