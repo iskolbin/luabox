@@ -121,15 +121,15 @@ end
 * `MOUSE_RIGHT`
 * `MOUSE_MIDDLE`
 * `MOUSE_RELEASE`
-* `MOUSE_WHEEL\_UP`
-* `MOUSE_WHEEL\_DOWN`
+* `MOUSE_WHEEL_UP`
+* `MOUSE_WHEEL_DOWN`
 
 ### Changing content ###
 * `clear( [textcolor, bgcolor] )`
 * `setcell( ch, x, y, [textcolor, bgcolor] )`
 
 ### Get cell content ###
-* `getcell( x, y )`
+* `getcell( x, y )` - returns tuple of char-code, text color and bg color of cell.
 
 #### Text color modifiers ####
 
