@@ -78,8 +78,8 @@ Default termbox output mode is **OUTPUT**\_**NORMAL**.
 * OUTPUT\_CURRENT
 * OUTPUT\_NORMAL
 * OUTPUT\_256
-* OUTPUT\_RGB216
-* OUTPUT\_GRAY24
+* OUTPUT\_216
+* OUTPUT\_GRAYSCALE
 
 ### Peeking and processing an event ###
 
@@ -128,6 +128,9 @@ end
 * clear( [textcolor, bgcolor] )
 * setcell( ch, x, y, [textcolor, bgcolor] )
 
+### Get cell content ###
+* getcell( x, y )
+
 #### Text color modifiers ####
 
 * BOLD -- text bold
@@ -158,13 +161,9 @@ Where mode is one of:
 ### Moving cursor ###
 * setcursor( x, y )
 
-### Color conversions ###
-
-Functions assume that 0 <= color <= 1.
-* rgb( r, g, b ) -- for output mode OUTPUT\_256
-* gray( gr ) -- for output mode OUTPUT\_256
-* rgb216( r, g, b ) -- for output mode OUTPUT\_RGB216
-* gray24( gr ) -- for output mode OUTPUT\_GRAY24
+### Colors ###
+* rgb( r, g, b ) -- for output mode `OUTPUT_256` and `OUTPUT_216` 
+* gray( gr ) -- for output mode `OUTPUT_256` and `OUTPUT_GRAYSCALE`
 
 #### Color constants ####
 * RGBMAX -- RGB colors count - 1
