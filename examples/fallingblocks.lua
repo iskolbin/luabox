@@ -1,11 +1,11 @@
-local Luabox = require('luabox')
+local luabox = require('luabox')
 
-Luabox.init( Luabox.INPUT_CURRENT, Luabox.OUTPUT_256 )
+luabox.init( luabox.INPUT_CURRENT, luabox.OUTPUT_256 )
 
 local state = 'menu'
 local dt = 0.5
 
-local WHITE, BLACK = Luabox.rgbf(1,1,1), Luabox.rgbf(0,0,0) 
+local WHITE, BLACK = luabox.rgbf(1,1,1), luabox.rgbf(0,0,0) 
 
 local states; states = {
 	menu = {
@@ -13,10 +13,10 @@ local states; states = {
 		selected = 1,
 	
 		render = function( self )
-			Luabox.print( '  New game  ', 1, 1, WHITE, (self.selected == 1 and Luabox.REVERSE) )
-			Luabox.print( '  Continue  ', 1, 2, self.ingame and WHITE or Luabox.grayf(0.5), (self.selected == 2 and Luabox.REVERSE) )
-			Luabox.print( '  About     ', 1, 3, WHITE, (self.selected == 3 and Luabox.REVERSE) )
-			Luabox.print( '  Exit      ', 1, 4, WHITE, (self.selected == 4 and Luabox.REVERSE) )
+			luabox.print( '  New game  ', 1, 1, WHITE, (self.selected == 1 and luabox.REVERSE) )
+			luabox.print( '  Continue  ', 1, 2, self.ingame and WHITE or luabox.grayf(0.5), (self.selected == 2 and luabox.REVERSE) )
+			luabox.print( '  About     ', 1, 3, WHITE, (self.selected == 3 and luabox.REVERSE) )
+			luabox.print( '  Exit      ', 1, 4, WHITE, (self.selected == 4 and luabox.REVERSE) )
 		end,
 		
 		update = function( self )
@@ -30,19 +30,19 @@ local states; states = {
 		end,
 		
 		onkey = function( self, ch, key, mode )
-			if key == Luabox.DOWN then
+			if key == luabox.DOWN then
 				self.selected = self.selected % 4 + 1
 				if self.selected == 2 and not self.ingame then
 					self.selected = 3
 				end
 				
-			elseif key == Luabox.UP then
+			elseif key == luabox.UP then
 				self.selected = (self.selected-2) % 4 + 1
 				if self.selected == 2 and not self.ingame then
 					self.selected = 1
 				end
 			
-			elseif key == Luabox.ENTER then
+			elseif key == luabox.ENTER then
 				if     self.selected == 1 then state = 'game'; self.ingame = true; self:resetgame()
 				elseif self.selected == 2 then state = 'game'
 				elseif self.selected == 3 then state = 'about'
@@ -54,10 +54,10 @@ local states; states = {
 	
 	about = {
 		render = function( self )
-			Luabox.print( 'About', 1, 1, WHITE + Luabox.BOLD, BLACK )
-			Luabox.print( 'Falling blocks v 1.0', 1, 3, WHITE, BLACK )
-			Luabox.print( 'Made with luabox https://bitbucket.org/iskoLuaboxin/luabox', 1, 4, WHITE, BLACK )
-			Luabox.print( 'by Ilya Kolbin iskolbin@gmail.com', 1, 5, WHITE, BLACK )
+			luabox.print( 'About', 1, 1, WHITE + luabox.BOLD, BLACK )
+			luabox.print( 'Falling blocks v 1.0', 1, 3, WHITE, BLACK )
+			luabox.print( 'Made with luabox https://bitbucket.org/iskoluaboxin/luabox', 1, 4, WHITE, BLACK )
+			luabox.print( 'by Ilya Kolbin iskolbin@gmail.com', 1, 5, WHITE, BLACK )
 		end,
 		
 		update = function( self )
@@ -98,13 +98,13 @@ local states; states = {
 		h = 20,
 		figcolors = {'r','g','b','p','c','y'},
 		colors = {
-			[' '] = Luabox.rgbf( 0, 0, 0 ),
-			['r'] = Luabox.rgbf( 1, 0, 0 ),
-			['g'] = Luabox.rgbf( 0, 1, 0 ),
-			['b'] = Luabox.rgbf( 0, 0, 1 ),
-			['y'] = Luabox.rgbf( 1, 1, 0 ),
-			['p'] = Luabox.rgbf( 1, 0, 1 ),
-			['c'] = Luabox.rgbf( 0, 1, 1 ),
+			[' '] = luabox.rgbf( 0, 0, 0 ),
+			['r'] = luabox.rgbf( 1, 0, 0 ),
+			['g'] = luabox.rgbf( 0, 1, 0 ),
+			['b'] = luabox.rgbf( 0, 0, 1 ),
+			['y'] = luabox.rgbf( 1, 1, 0 ),
+			['p'] = luabox.rgbf( 1, 0, 1 ),
+			['c'] = luabox.rgbf( 0, 1, 1 ),
 		},
 		figures = {
 			{ {{ 1,-1},{ 0,-1},{ 0, 0},{ 0, 1}}, {{ 1, 1},{ 1, 0},{ 0, 0},{-1, 0}}, {{-1, 1},{ 0, 1},{ 0, 0},{ 0,-1}}, {{-1,-1},{-1, 0},{ 0, 0},{ 1, 0}} },
@@ -124,20 +124,20 @@ local states; states = {
 		render = function( self )
 			local SCORE_POS = self.layout.score
 			
-			Luabox.print( 'Score', SCORE_POS[1], SCORE_POS[2], WHITE + Luabox.BOLD )
-			Luabox.print( self.score, SCORE_POS[1] + 7, SCORE_POS[2], WHITE )
+			luabox.print( 'Score', SCORE_POS[1], SCORE_POS[2], WHITE + luabox.BOLD )
+			luabox.print( self.score, SCORE_POS[1] + 7, SCORE_POS[2], WHITE )
 		
 			local LEVEL_POS = self.layout.level
 		
-			Luabox.print( 'Level', LEVEL_POS[1], LEVEL_POS[2], WHITE + Luabox.BOLD )
-			Luabox.print( self.level, LEVEL_POS[1] + 7, LEVEL_POS[2], WHITE )
+			luabox.print( 'Level', LEVEL_POS[1], LEVEL_POS[2], WHITE + luabox.BOLD )
+			luabox.print( self.level, LEVEL_POS[1] + 7, LEVEL_POS[2], WHITE )
 		
 			local FIELD_POS = self.layout.field
 			
 			for x = 1, self.w do
 				for y = 1, self.h do
 					local c = self.field[x][y]
-					Luabox.print( ' ', FIELD_POS[1] + x, FIELD_POS[2] + y, WHITE, self.colors[c] )
+					luabox.print( ' ', FIELD_POS[1] + x, FIELD_POS[2] + y, WHITE, self.colors[c] )
 				end
 			end
 			
@@ -146,7 +146,7 @@ local states; states = {
 			local f = self.figure
 			local p = self.figures[f.prototype]
 			for _, pos in ipairs( p[f.direction] ) do
-				Luabox.print( ' ', FIELD_POS[1] + pos[1] + pos0[1], FIELD_POS[2] + pos[2] + pos0[2], WHITE, c )
+				luabox.print( ' ', FIELD_POS[1] + pos[1] + pos0[1], FIELD_POS[2] + pos[2] + pos0[2], WHITE, c )
 			end
 		end,
 		
@@ -304,15 +304,15 @@ local states; states = {
 		end,
 
 		onkey = function( self, ch, key, mode )
-			if key == Luabox.LEFT then
+			if key == luabox.LEFT then
 				self:moveleft()
-			elseif key == Luabox.RIGHT then
+			elseif key == luabox.RIGHT then
 				self:moveright()
-			elseif key == Luabox.UP then
+			elseif key == luabox.UP then
 				self:rotatecw()
-			elseif key == Luabox.DOWN then
+			elseif key == luabox.DOWN then
 				self.delay = self.fastdelay
-			elseif key == Luabox.ESC then
+			elseif key == luabox.ESC then
 				state = 'menu'
 			end
 		end,
@@ -320,9 +320,9 @@ local states; states = {
 	
 	gameover = {
 		render = function( self )
-			Luabox.print( 'A looser are you lol', 1, 2, WHITE )
-			Luabox.print( 'Score', 1, 5, WHITE + Luabox.BOLD )
-			Luabox.print( states.game.score, 1 + 7, 5, WHITE )
+			luabox.print( 'A looser are you lol', 1, 2, WHITE )
+			luabox.print( 'Score', 1, 5, WHITE + luabox.BOLD )
+			luabox.print( states.game.score, 1 + 7, 5, WHITE )
 		end,
 		
 		update = function( self )
@@ -335,7 +335,7 @@ local states; states = {
 	}
 }
 
-Luabox.setcallback( Luabox.EVENT_KEY, function( ch, key, mode ) 
+luabox.setcallback( luabox.EVENT_KEY, function( ch, key, mode ) 
 	states[state]:onkey( ch, key, mode ) 
 end )
 
@@ -343,11 +343,11 @@ end )
 while state ~= 'exit' do
 	states[state]:update()
 	
-	Luabox.clear()
+	luabox.clear()
 	states[state]:render()
-	Luabox.present()
+	luabox.present()
 	
-	Luabox.peek( 1/60 )
+	luabox.peek( 1/60 )
 end
 
-Luabox.shutdown()
+luabox.shutdown()

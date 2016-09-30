@@ -1,9 +1,9 @@
-local Luabox = require('luabox')
+local luabox = require('luabox')
 local ok, lfs = pcall( require, 'lfs' )
 
 assert( ok, 'Lua file system is not installed; try\nluarocks install lfs' )
 
-Luabox.init( Luabox.INPUT_CURRENT, Luabox.OUTPUT_256 )
+luabox.init( luabox.INPUT_CURRENT, luabox.OUTPUT_256 )
 
 local lufm = {
 	active = true,
@@ -21,13 +21,13 @@ local lufm = {
 	getcolor = function( self, key )
 		local rgbf = self.rgbf[key]
 		if rgbf then
-			return Luabox.rgbf( rgbf[1], rgbf[2], rgbf[3] )
+			return luabox.rgbf( rgbf[1], rgbf[2], rgbf[3] )
 		else
 			local grayf = self.grayf[key]
 			if grayf then
-				return Luabox.grayf( grayf )
+				return luabox.grayf( grayf )
 			else
-				return Luabox.grayf( 0 )
+				return luabox.grayf( 0 )
 			end
 		end
 	end,
@@ -105,10 +105,10 @@ local lufm = {
 	activefilters = {},
 
 	render = function( self )
-    Luabox.clear()
-		Luabox.print( lfs.currentdir(), 0, 0, self:getcolor'path', Luabox.grayf(0))
+    luabox.clear()
+		luabox.print( lfs.currentdir(), 0, 0, self:getcolor'path', luabox.grayf(0))
    	local i = 0
-		for i = 1, math.min( self.pagepos+#self.files-1, Luabox.height()) do
+		for i = 1, math.min( self.pagepos+#self.files-1, luabox.height()) do
 			local f = self.files[i+self.pagepos-1]
 			local rgbf = f.attr.mode == 'directory' and self:getcolor'folder' or 
 				f.attr.permissions:match('x') and self:getcolor'executable' or
@@ -116,12 +116,12 @@ local lufm = {
 				self:getcolor'common'
 			
 			if i+self.pagepos-1 == self.pos then
-				Luabox.print( f.name, 1, i, Luabox.grayf(0), rgbf )
+				luabox.print( f.name, 1, i, luabox.grayf(0), rgbf )
 			else	
-				Luabox.print( f.name, 1, i, rgbf, Luabox.grayf(0))
+				luabox.print( f.name, 1, i, rgbf, luabox.grayf(0))
 			end
 		end
-		Luabox.present()
+		luabox.present()
 	end,
 	
 	exit = function( self )
@@ -130,7 +130,7 @@ local lufm = {
 
 	setpos = function( self, pos )
 		self.pos = pos
-		while self.pos-self.pagepos >= Luabox.height() do self.pagepos = self.pagepos + 1 end
+		while self.pos-self.pagepos >= luabox.height() do self.pagepos = self.pagepos + 1 end
 		while self.pos-self.pagepos < 0 do self.pagepos = self.pagepos - 1 end
 	end,
 
@@ -141,10 +141,10 @@ local lufm = {
 	end,
 
 	onkey = function( self, ch, key, mod )
-		if key == Luabox.ESC then self:exit()
-    elseif key == Luabox.DOWN and self.pos < #self.filteredfiles then self:setpos( self.pos + 1 )
-    elseif key == Luabox.UP and self.pos > 1 then self:setpos( self.pos - 1 )
-		elseif key == Luabox.ENTER then self:exec()
+		if key == luabox.ESC then self:exit()
+    elseif key == luabox.DOWN and self.pos < #self.filteredfiles then self:setpos( self.pos + 1 )
+    elseif key == luabox.UP and self.pos > 1 then self:setpos( self.pos - 1 )
+		elseif key == luabox.ENTER then self:exec()
 		end
 	end,
 	
@@ -153,13 +153,13 @@ local lufm = {
 }
 
 
-Luabox.setcallback( Luabox.EVENT_KEY, function(ch,key,mod) lufm:onkey(ch,key,mod) end )
-Luabox.setcallback( Luabox.EVENT_RESIZE, function(w,h) lufm:onresize(w,h) end )
+luabox.setcallback( luabox.EVENT_KEY, function(ch,key,mod) lufm:onkey(ch,key,mod) end )
+luabox.setcallback( luabox.EVENT_RESIZE, function(w,h) lufm:onresize(w,h) end )
 
 lufm:chdir(lfs.currentdir())
 while lufm.active do
 	lufm:render()
-	Luabox.peek()
+	luabox.peek()
 end
 
-Luabox.shutdown()
+luabox.shutdown()

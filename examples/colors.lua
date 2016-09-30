@@ -1,4 +1,4 @@
-local Luabox = require('luabox')
+local luabox = require('luabox')
 local active = true
 
 local x, y = 10, 10
@@ -7,59 +7,59 @@ local info2 = '<none>'
 local info3 = '<none>'
 
 local render = function()
-    Luabox.clear()
-    Luabox.print( 'Palette', 0, 0, Luabox.grayf(1) + Luabox.BOLD + Luabox.UNDERLINE, Luabox.grayf(0) )
+    luabox.clear()
+    luabox.print( 'Palette', 0, 0, luabox.grayf(1) + luabox.BOLD + luabox.UNDERLINE, luabox.grayf(0) )
 
-    for r = 0, Luabox.RGBCOLORMAX do
-        for g = 0, Luabox.RGBCOLORMAX do
-            for b = 0, Luabox.RGBCOLORMAX do
+    for r = 0, luabox.RGBCOLORMAX do
+        for g = 0, luabox.RGBCOLORMAX do
+            for b = 0, luabox.RGBCOLORMAX do
                 local x = b + 6*g
                 local y = r + 1
-                Luabox.print( ' ', x, y, 0, Luabox.rgbf( r/Luabox.RGBCOLORMAX, g/Luabox.RGBCOLORMAX, b/Luabox.RGBCOLORMAX ))
+                luabox.print( ' ', x, y, 0, luabox.rgbf( r/luabox.RGBCOLORMAX, g/luabox.RGBCOLORMAX, b/luabox.RGBCOLORMAX ))
             end
         end
     end
 
-    Luabox.print( 'Grayscale', 0, Luabox.RGBCOLORMAX+3, Luabox.grayf(1) + Luabox.BOLD + Luabox.UNDERLINE, Luabox.grayf(0) )
-    for i = 0, Luabox.GRAYMAX do
-        Luabox.print( ' ', i, Luabox.RGBCOLORMAX+4, 0, Luabox.grayf(i/Luabox.GRAYMAX))
+    luabox.print( 'Grayscale', 0, luabox.RGBCOLORMAX+3, luabox.grayf(1) + luabox.BOLD + luabox.UNDERLINE, luabox.grayf(0) )
+    for i = 0, luabox.GRAYMAX do
+        luabox.print( ' ', i, luabox.RGBCOLORMAX+4, 0, luabox.grayf(i/luabox.GRAYMAX))
     end
 
-    local ROW = Luabox.RGBCOLORMAX+6
-    Luabox.print( 'Mix', 0, ROW, Luabox.grayf(1) + Luabox.BOLD + Luabox.UNDERLINE, Luabox.grayf(0) )
+    local ROW = luabox.RGBCOLORMAX+6
+    luabox.print( 'Mix', 0, ROW, luabox.grayf(1) + luabox.BOLD + luabox.UNDERLINE, luabox.grayf(0) )
 
-    for i = 0, 12*Luabox.RGBCOLORMAX do
-        local v = 0.1*i/Luabox.RGBCOLORMAX
-        Luabox.print( ' ', i, ROW+1, 0, Luabox.rgbf(v,0,0))
-        Luabox.print( ' ', i, ROW+2, 0, Luabox.rgbf(0,v,0))
-        Luabox.print( ' ', i, ROW+3, 0, Luabox.rgbf(0,0,v))
-        Luabox.print( ' ', i, ROW+4, 0, Luabox.rgbf(0,v,v))
-        Luabox.print( ' ', i, ROW+5, 0, Luabox.rgbf(v,0,v))
-        Luabox.print( ' ', i, ROW+6, 0, Luabox.rgbf(v,v,0))
-        Luabox.print( ' ', i, ROW+7, 0, Luabox.rgbf(v,v,v))
-        Luabox.print( ' ', i, ROW+8, 0, Luabox.rgbf(0.5*v,v,v))
-        Luabox.print( ' ', i, ROW+9, 0, Luabox.rgbf(v,0.5*v,v))
-        Luabox.print( ' ', i, ROW+10, 0, Luabox.rgbf(v,v,0.5*v))
-        Luabox.print( ' ', i, ROW+11, 0, Luabox.rgbf(0.5*v,0.5*v,v))
-        Luabox.print( ' ', i, ROW+12, 0, Luabox.rgbf(v,0.5*v,0.5*v))
-        Luabox.print( ' ', i, ROW+13, 0, Luabox.rgbf(0.5*v,v,0.5*v))
-        Luabox.print( ' ', i, ROW+14, 0, Luabox.rgbf(0.5*v,0.5*v,0.5*v))
+    for i = 0, 12*luabox.RGBCOLORMAX do
+        local v = 0.1*i/luabox.RGBCOLORMAX
+        luabox.print( ' ', i, ROW+1, 0, luabox.rgbf(v,0,0))
+        luabox.print( ' ', i, ROW+2, 0, luabox.rgbf(0,v,0))
+        luabox.print( ' ', i, ROW+3, 0, luabox.rgbf(0,0,v))
+        luabox.print( ' ', i, ROW+4, 0, luabox.rgbf(0,v,v))
+        luabox.print( ' ', i, ROW+5, 0, luabox.rgbf(v,0,v))
+        luabox.print( ' ', i, ROW+6, 0, luabox.rgbf(v,v,0))
+        luabox.print( ' ', i, ROW+7, 0, luabox.rgbf(v,v,v))
+        luabox.print( ' ', i, ROW+8, 0, luabox.rgbf(0.5*v,v,v))
+        luabox.print( ' ', i, ROW+9, 0, luabox.rgbf(v,0.5*v,v))
+        luabox.print( ' ', i, ROW+10, 0, luabox.rgbf(v,v,0.5*v))
+        luabox.print( ' ', i, ROW+11, 0, luabox.rgbf(0.5*v,0.5*v,v))
+        luabox.print( ' ', i, ROW+12, 0, luabox.rgbf(v,0.5*v,0.5*v))
+        luabox.print( ' ', i, ROW+13, 0, luabox.rgbf(0.5*v,v,0.5*v))
+        luabox.print( ' ', i, ROW+14, 0, luabox.rgbf(0.5*v,0.5*v,0.5*v))
 		end
 
-    Luabox.print( 'Event info', 0, Luabox.RGBCOLORMAX+22, Luabox.grayf(1) + Luabox.BOLD + Luabox.UNDERLINE, Luabox.grayf(0) )
-    Luabox.print( info, 0, Luabox.RGBCOLORMAX+23, Luabox.grayf(1), Luabox.grayf(0) )
-    Luabox.print( info2, 0, Luabox.RGBCOLORMAX+24, Luabox.grayf(1), Luabox.grayf(0) )
-    Luabox.print( info3, 0, Luabox.RGBCOLORMAX+25, Luabox.grayf(1), Luabox.grayf(0) )
+    luabox.print( 'Event info', 0, luabox.RGBCOLORMAX+22, luabox.grayf(1) + luabox.BOLD + luabox.UNDERLINE, luabox.grayf(0) )
+    luabox.print( info, 0, luabox.RGBCOLORMAX+23, luabox.grayf(1), luabox.grayf(0) )
+    luabox.print( info2, 0, luabox.RGBCOLORMAX+24, luabox.grayf(1), luabox.grayf(0) )
+    luabox.print( info3, 0, luabox.RGBCOLORMAX+25, luabox.grayf(1), luabox.grayf(0) )
 
-    Luabox.print( ('Screen size: %dx%d'):format( Luabox.width(), Luabox.height()), 0, Luabox.RGBCOLORMAX+28, Luabox.grayf(1), Luabox.grayf(0) )
+    luabox.print( ('Screen size: %dx%d'):format( luabox.width(), luabox.height()), 0, luabox.RGBCOLORMAX+28, luabox.grayf(1), luabox.grayf(0) )
 
-    Luabox.print( 'Press <ESC> to exit', 0, Luabox.RGBCOLORMAX+30, Luabox.grayf(1) + Luabox.REVERSE, Luabox.grayf(0) )
+    luabox.print( 'Press <ESC> to exit', 0, luabox.RGBCOLORMAX+30, luabox.grayf(1) + luabox.REVERSE, luabox.grayf(0) )
 
-    Luabox.present()
+    luabox.present()
 end
 
 local onkey = function( ch, key, mod )
-    if key == Luabox.ESC then
+    if key == luabox.ESC then
         active = false
     end
 
@@ -72,26 +72,26 @@ end
 
 local onmouse = function( x, y, key )
 	local msg = ''
-	if key == Luabox.MOUSE_LEFT then msg = '<LEFT>'
-	elseif key == Luabox.MOUSE_RIGHT then msg = '<RIGHT>'
-	elseif key == Luabox.MOUSE_RELEASE then msg = '<RELEASE>'
-	elseif key == Luabox.MOUSE_WHEEL_UP then msg = '<WHEEL UP>'
-	elseif key == Luabox.MOUSE_WHEEL_DOWN then msg = '<WHEEL DOWN>'
+	if key == luabox.MOUSE_LEFT then msg = '<LEFT>'
+	elseif key == luabox.MOUSE_RIGHT then msg = '<RIGHT>'
+	elseif key == luabox.MOUSE_RELEASE then msg = '<RELEASE>'
+	elseif key == luabox.MOUSE_WHEEL_UP then msg = '<WHEEL UP>'
+	elseif key == luabox.MOUSE_WHEEL_DOWN then msg = '<WHEEL DOWN>'
 	end
 
-	local ch, fg, bg = Luabox.getcell( x, y )
+	local ch, fg, bg = luabox.getcell( x, y )
 
 	info3 = 'Mouse event: x=' .. x .. ' y= ' .. y .. ' key=' .. msg .. ' ch=' .. ch .. ' fg=' .. fg .. ' bg=' .. bg
 end
 
-Luabox.init( Luabox.INPUT_ESC + Luabox.INPUT_MOUSE, Luabox.OUTPUT_256 )
-Luabox.setcallback( Luabox.EVENT_KEY, onkey )
-Luabox.setcallback( Luabox.EVENT_RESIZE, onresize )
-Luabox.setcallback( Luabox.EVENT_MOUSE, onmouse )
+luabox.init( luabox.INPUT_ESC + luabox.INPUT_MOUSE, luabox.OUTPUT_256 )
+luabox.setcallback( luabox.EVENT_KEY, onkey )
+luabox.setcallback( luabox.EVENT_RESIZE, onresize )
+luabox.setcallback( luabox.EVENT_MOUSE, onmouse )
 
 while active do
     render()
-    Luabox.peek()
+    luabox.peek()
 end
 
-Luabox.shutdown()
+luabox.shutdown()

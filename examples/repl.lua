@@ -1,6 +1,6 @@
-local Luabox = require('luabox')
+local luabox = require('luabox')
 
-Luabox.init( Luabox.INPUT_CURRENT, Luabox.OUTPUT_256 )
+luabox.init( luabox.INPUT_CURRENT, luabox.OUTPUT_256 )
 
 local REPL = {
 	active = true,
@@ -45,31 +45,31 @@ local REPL = {
 	end,
 
 	renderTitle = function( self )
-		Luabox.print( self.title, 1, 1, Luabox.grayf( 1 ) + Luabox.BOLD + Luabox.UNDERLINE, Luabox.grayf( 0 ))
+		luabox.print( self.title, 1, 1, luabox.grayf( 1 ) + luabox.BOLD + luabox.UNDERLINE, luabox.grayf( 0 ))
 	end,
 
 	renderCurrent = function( self )
 		local current = self.current
-		Luabox.print( self.newline .. current, 1, 3, Luabox.grayf(1) + Luabox.BOLD, Luabox.grayf(0))
+		luabox.print( self.newline .. current, 1, 3, luabox.grayf(1) + luabox.BOLD, luabox.grayf(0))
 		local csymb = current:sub(self.pos+1,self.pos+1)
-		Luabox.print( csymb == '' and ' ' or csymb, 3+self.pos, 3, Luabox.rgbf(0,0,0)+Luabox.BOLD, Luabox.rgbf(1,1,1))
+		luabox.print( csymb == '' and ' ' or csymb, 3+self.pos, 3, luabox.rgbf(0,0,0)+luabox.BOLD, luabox.rgbf(1,1,1))
 	end,
 
 	renderOutput = function( self )
 		if self.output_error then
-			Luabox.print( self.output, 3, 5, Luabox.rgbf(1,0,0), Luabox.grayf(0))
+			luabox.print( self.output, 3, 5, luabox.rgbf(1,0,0), luabox.grayf(0))
 		else
-			Luabox.print( self.output, 3, 5, Luabox.rgbf(0,1,0), Luabox.grayf(0))
+			luabox.print( self.output, 3, 5, luabox.rgbf(0,1,0), luabox.grayf(0))
 		end
 	end,
 
 	render = function( self )
 		local pos, current, output = self.pos, self.current, self.output
-		Luabox.clear()
+		luabox.clear()
 		self:renderTitle()
 		self:renderCurrent()
 		self:renderOutput()
-		Luabox.present()
+		luabox.present()
 	end,
 	
 	backspace = function( self ) 
@@ -126,19 +126,19 @@ local REPL = {
 	end,
 
 	onkey = function( self, ch, key, mod )
-		if key == Luabox.BACKSPACE2 then
+		if key == luabox.BACKSPACE2 then
 			self:backspace()
-		elseif key == Luabox.ENTER then
+		elseif key == luabox.ENTER then
 			self:execute()
-		elseif key == Luabox.SPACE then
+		elseif key == luabox.SPACE then
 			self:addch( ' ' )
-		elseif key == Luabox.LEFT then
+		elseif key == luabox.LEFT then
 			self:move( -1 )
-		elseif key == Luabox.RIGHT then
+		elseif key == luabox.RIGHT then
 			self:move( 1 )
-		elseif key == Luabox.UP then
+		elseif key == luabox.UP then
 			self:scanbuffer( -1 )
-		elseif key == Luabox.DOWN then
+		elseif key == luabox.DOWN then
 			self:scanbuffer( 1 )
 		else
 			self:addch( ch )
@@ -148,15 +148,15 @@ local REPL = {
 
 os.exit = function(...) REPL.active = false end
 
-Luabox.setcallback( Luabox.EVENT_KEY, function(...) REPL:onkey(...) end )
-Luabox.setcallback( Luabox.EVENT_RESIZE, function(...) REPL:onresize(...) end )
+luabox.setcallback( luabox.EVENT_KEY, function(...) REPL:onkey(...) end )
+luabox.setcallback( luabox.EVENT_RESIZE, function(...) REPL:onresize(...) end )
 
 REPL.output = REPL.about
 _G.REPL = REPL
 
 while REPL.active do
 	REPL:render()
-	Luabox.peek()
+	luabox.peek()
 end
 
-Luabox.shutdown()
+luabox.shutdown()
