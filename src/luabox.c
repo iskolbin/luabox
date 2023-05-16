@@ -15,6 +15,10 @@
 #define luaL_newlib(L,l) (lua_newtable(L), luaL_register(L,NULL,l))
 #endif
 
+#ifndef luaL_checkint
+#define luaL_checkint luaL_checkinteger
+#endif
+
 #define LUABOX_WRAP     0
 #define LUABOX_WRAP_RAW 1
 #define LUABOX_TRUNC    2
