@@ -1,5 +1,7 @@
 local luabox = require('luabox')
 
+local loadstring = _G.loadstring or _G.load
+
 luabox.init( luabox.INPUT_CURRENT, luabox.OUTPUT_256 )
 
 local REPL = {

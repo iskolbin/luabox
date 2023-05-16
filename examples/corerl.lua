@@ -2,8 +2,8 @@
 
 local luabox = require('luabox')
 
-local SIZEX	= 128
-local SIZEY	= 64
+local SIZEX	= 96
+local SIZEY	= 32
 local NMAX = 20
 
 local state = 'playing'
@@ -94,7 +94,7 @@ local function sgn( x )
 end
 
 local function init()
-	math.randomseed( os.clock() )
+	math.randomseed( os.time() )
 	init_map()
 end
 
