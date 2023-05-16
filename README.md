@@ -173,17 +173,17 @@ Where mode is one of:
 ### Example usage ###
 See examples folder:
 
-####color.lua####
+### color.lua ###
 Testing script showing colored text.
 
-####fallingblocks.lua####
+### fallingblocks.lua ###
 Falling blocks game.
 
-####lufm.lua####
+### lufm.lua ###
 Primitive file manager.
 
-####repl.lua####
+### repl.lua ###
 REPL for Lua.
 
-####corerl.lua####
+### corerl.lua ###
 Clone of small rogulike game, [details](http://www.locklessinc.com/articles/512byte\_roguelike/).
